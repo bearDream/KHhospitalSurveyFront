@@ -9,7 +9,8 @@ import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
-Vue.prototype.servername = 'http://39.107.66.30'
+// 上线后需要修改为 实际的 外网IP
+Vue.prototype.servername = 'http://localhost'
 // 'http://kforquestionnaire.xyz'
 Vue.use(ElementUI)
 
