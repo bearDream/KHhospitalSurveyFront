@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
 import Collection from "@/views/collectionpage/MainPageView/Collection.vue"
 import Create from "@/views/createpage/CreatePageView/Create.vue"
+import DepartmentSetting from "@/views/departmentpage/DepartmentSetting.vue"
 import Help from "@/views/helppage/Help.vue"
 import Analysis from "@/views/collectionpage/AnalysisPageView/Analysis.vue"
 import FillIn from "@/views/fillinpage/FillInPageView/FillIn.vue"
@@ -29,6 +30,11 @@ const routes: Array<RouteConfig> = [
         path: '/create/:id',
         name: "create",
         component: Create,
+    },
+    {
+        path: '/department',
+        name: "department",
+        component: DepartmentSetting,
     },
     {
         path: '/help',

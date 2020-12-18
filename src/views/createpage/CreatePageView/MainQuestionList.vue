@@ -56,7 +56,6 @@
                       :grade-max="item.gradeMax"
                       :number-type="item.numberType"
                       :question-options="item.questionOptions"
-                      :question-options-score="item.questionOptionsScore"
                       :text-description="item.textDescription"
                       @clickUnSelected="selectOneBox(index)"
                       @clickSelected="selectOneBox(index)"
@@ -195,8 +194,6 @@
                     questionDescription: data['questionDescription'],
                     questionType: data['questionType'],
                     questionOptions: data['questionOptions'],
-                  //
-                    questionOptionsScore: data['questionOptionsScore'],
                     frontOptions: data['frontOptions'],
                     frontChoose: data['frontChoose'],
                     numberType: data['numberType'],
@@ -228,7 +225,6 @@
                     questionDescription: "",
                     questionType: type,
                     questionOptions: [''],
-                    questionOptionsScore: [''],
                     frontOptions: [[]],
                     frontChoose: false,
                     numberType: 'integer',
