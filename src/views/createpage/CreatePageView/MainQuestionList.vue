@@ -56,7 +56,7 @@
                       :grade-max="item.gradeMax"
                       :number-type="item.numberType"
                       :question-options="item.questionOptions"
-                      :question-options-score="questionOptionsScore"
+                      :question-options-score="item.questionOptionsScore"
                       :text-description="item.textDescription"
                       @clickUnSelected="selectOneBox(index)"
                       @clickSelected="selectOneBox(index)"

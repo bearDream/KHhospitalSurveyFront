@@ -209,32 +209,32 @@
                         </el-form-item>
                     </div>
 
-                  <div v-if="typeValue==='single_check'||typeValue==='multi_check'">
-                    <el-form-item v-for="(item,index) in optionsScore" :key="index">
-                      选项{{index+1}}：
-                      <el-input v-model="optionsScore[index]" style="max-width: 200px"></el-input>
-                      <el-tooltip effect="light"
-                                  content="在下方添加"
-                                  :open-delay="200"
-                                  :hide-after="1500"
-                                  placement="top">
-                        <el-button size="medium" round class="add-option-button"
-                                   @click="addOptionScore"
-                        ><i class="el-icon-plus"></i>
-                        </el-button>
-                      </el-tooltip>
-                      <el-tooltip effect="light"
-                                  content="删除本选项"
-                                  :open-delay="200"
-                                  :hide-after="1500"
-                                  placement="top">
-                        <el-button size="medium" round class="delete-option-button"
-                                   @click="deleteOptionScore(index)"
-                        ><i class="el-icon-delete"></i>
-                        </el-button>
-                      </el-tooltip>
-                    </el-form-item>
-                  </div>
+                    <div v-if="typeValue==='single_check'||typeValue==='multi_check'">
+                      <el-form-item v-for="(item,index) in optionsScore" :key="index">
+                        选项{{index+1}}评分：
+                        <el-input v-model="optionsScore[index]" style="max-width: 200px"></el-input>
+                        <el-tooltip effect="light"
+                                    content="在下方添加"
+                                    :open-delay="200"
+                                    :hide-after="1500"
+                                    placement="top">
+                          <el-button size="medium" round class="add-option-button"
+                                     @click="addOptionScore"
+                          ><i class="el-icon-plus"></i>
+                          </el-button>
+                        </el-tooltip>
+                        <el-tooltip effect="light"
+                                    content="删除本选项"
+                                    :open-delay="200"
+                                    :hide-after="1500"
+                                    placement="top">
+                          <el-button size="medium" round class="delete-option-button"
+                                     @click="deleteOptionScore(index)"
+                          ><i class="el-icon-delete"></i>
+                          </el-button>
+                        </el-tooltip>
+                      </el-form-item>
+                    </div>
 
                     <el-form-item>
                         <el-button type="primary" @click="saveOneQuestion">保存</el-button>
