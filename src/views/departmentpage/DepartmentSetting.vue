@@ -38,10 +38,10 @@ export default {
   name: "DepartmentSetting",
   data() {
     return {
-      departmentData: [{ id: -1000, deptName: "全部", childList: [] }],
+      departmentData: [{ id: -1000, depName: "全部", childList: [] }],
       defaultProps: {
         children: "childList",
-        label: "deptName",
+        label: "depName",
       },
       editDialogVisible: false,
       addDepartment: false, // true为添加，false为编辑
@@ -170,7 +170,6 @@ export default {
         this.$set(parentData, "childList", []);
       }
       console.log(parentData, data);
-      data.deptName = data.depName;
       parentData.childList.push(data);
       // this.fetchData();
     },
@@ -184,7 +183,7 @@ export default {
         type: "success",
       });
       this.closeEditDialog();
-      originalData.deptName = updatedData.depName;
+      originalData.depName = updatedData.depName;
       // this.fetchData();
     },
     processEditFail() {

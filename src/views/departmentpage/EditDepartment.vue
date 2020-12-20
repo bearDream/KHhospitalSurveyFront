@@ -59,7 +59,7 @@ export default {
   },
   mounted() {
     if (!this.isNew) {
-      this.form.departmentName = this.nodeData.deptName;
+      this.form.departmentName = this.nodeData.depName;
     }
   },
   methods: {
