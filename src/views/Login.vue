@@ -83,12 +83,13 @@
                     if (valid) {
                         this.axios.post('/api/login?username=' + this.loginForm.username + '&password=' + this.loginForm.password).then((res) => {
                             this.loading = false;
-                            if(res.data==='wrong'){
+                            if(res.data.success===false){
                                 this.$message.error({message:'账户名或密码输入错误！',duration:1000});
                             }
-                            else if(res.data==='success'){
+                            else if(res.data.success===true){
                                 this.$message.success({message:'登录成功！',duration:1000});
                                 this.$router.replace('/collection');
+                                localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo));
                                 this.$store.commit('login',this.loginForm.username);
                             }
                         })

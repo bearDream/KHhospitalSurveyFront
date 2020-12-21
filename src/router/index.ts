@@ -7,6 +7,7 @@ import Help from "@/views/helppage/Help.vue"
 import Analysis from "@/views/collectionpage/AnalysisPageView/Analysis.vue"
 import FillIn from "@/views/fillinpage/FillInPageView/FillIn.vue"
 import Login from "@/views/Login.vue"
+import PatientManagement from "@/views/PatientPageView/PatientManagement.vue"
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,11 @@ const routes: Array<RouteConfig> = [
         path: '/department',
         name: "department",
         component: DepartmentSetting,
+    },
+    {
+        path: '/patient',
+        name: "patient",
+        component: PatientManagement,
     },
     {
         path: '/help',

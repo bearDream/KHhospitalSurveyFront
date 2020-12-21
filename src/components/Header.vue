@@ -6,6 +6,7 @@
                 <el-menu-item class="el-menu-item" index="/collection">我的问卷</el-menu-item>
                 <el-menu-item class="el-menu-item" index="/create" @click="gotoCreate">创建问卷</el-menu-item>
                 <el-menu-item class="el-menu-item" index="/department">机构设置</el-menu-item>
+                <el-menu-item class="el-menu-item" index="/patient">病人管理</el-menu-item>
                 <el-menu-item class="el-menu-item" index="/help">帮助中心</el-menu-item>
             </el-menu>
         </el-col>

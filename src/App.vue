@@ -7,7 +7,7 @@
             <el-backtop></el-backtop>
             <el-container>
                 <el-header>
-                    <Header></Header>
+                    <Header v-show="this.$route.name !== 'login'"></Header>
                 </el-header>
                 <el-main>
                     <router-view></router-view>
