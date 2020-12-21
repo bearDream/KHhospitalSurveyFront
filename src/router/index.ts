@@ -1,12 +1,13 @@
 import Vue from 'vue'
-import VueRouter, {RouteConfig} from 'vue-router'
+import VueRouter, { RouteConfig } from 'vue-router'
 import Collection from "@/views/collectionpage/MainPageView/Collection.vue"
 import Create from "@/views/createpage/CreatePageView/Create.vue"
-import DepartmentSetting from "@/views/departmentpage/DepartmentSetting.vue"
+import DepartmentSetting from "@/views/departmentpage/DepartmentPageView/DepartmentSetting.vue"
 import Help from "@/views/helppage/Help.vue"
 import Analysis from "@/views/collectionpage/AnalysisPageView/Analysis.vue"
 import FillIn from "@/views/fillinpage/FillInPageView/FillIn.vue"
 import Login from "@/views/Login.vue"
+import UserManage from "@/views/managepage/UserManagePageView/UserManage.vue"
 
 Vue.use(VueRouter)
 
@@ -50,6 +51,11 @@ const routes: Array<RouteConfig> = [
         path: '/fillin/:id',
         name: "fillin",
         component: FillIn,
+    },
+    {
+        path: '/manage/',
+        name: "manage",
+        component: UserManage,
     }
 ]
 
