@@ -162,7 +162,8 @@
         methods: {
             fetchData() {
                 if(localStorage.getItem('Ip')){
-                    this.axios.get("http://api.tianapi.com/txapi/ipquery/index?key=68b512d1b0023c2a4db0818a4854700c").then((res) => {
+                    this.axios.get("http://api.tianapi.com/txapi/ipquery/index?key=68b512d1b0023c2a4db0818a4854700c")
+                        .then((res) => {
                         const Ip = res.data['newslist'][0]['ip']
                         console.log(res,Ip)
                         localStorage.setItem('Ip', Ip)
