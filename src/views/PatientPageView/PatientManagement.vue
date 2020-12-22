@@ -31,6 +31,17 @@
                     label="身份证">
             </el-table-column>
         </el-table>
+        <div class="block">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 50, 100, 200]"
+                    :page-size="limit"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
 
         <!-- 添加患者对话框 -->
         <el-dialog title="添加患者" :visible.sync="dialogFormVisible">
@@ -39,7 +50,7 @@
                     <el-input v-model="form.patientId" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名" prop="patientName" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" required=true auto-complete="off"></el-input>
+                    <el-input v-model="form.patientName" required=true auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" prop="gender" :label-width="formLabelWidth">
                     <el-radio-group v-model="form.gender" style="margin-top: 10px;">
@@ -70,8 +81,25 @@
         name: "PatientManagement",
 
         data() {
+            const checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback();
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    console.log(reg.test(value));
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        return callback(new Error('请输入正确的手机号'));
+                    }
+                }
+            };
             return {
+                limit: 10,
+                currentPage: 1,
+                total: 0,
                 formLabelWidth: '120px',
+                userinfo: {},
                 dialogFormVisible: false,
                 tableData: [{
                     patientId: '202013233265',
@@ -82,8 +110,8 @@
                 }],
                 form: {
                     patientId: '',
-                    name: '',
-                    gender: '',
+                    patientName: '',
+                    gender: 1,
                     department: '',
                     phone: '',
                     idNumber: ''
@@ -96,6 +124,9 @@
                     patientName: [
                         { required: true, message: '请输入患者姓名', trigger: 'blur' },
                         { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+                    ],
+                    phone: [
+                        {validator: checkPhone, trigger: 'blur'}
                     ]
                 }
             }
@@ -105,19 +136,20 @@
         },
         methods: {
             init() {
-                const userinfo = JSON.parse(localStorage.getItem('userInfo'))
-                this.form.department = userinfo.depName
-                this.initTable();
+                this.userinfo = JSON.parse(localStorage.getItem('userInfo'))
+                this.form.department = this.userinfo.depName
+                this.initTable(1, 10);
             },
-            initTable() {
+            initTable(index, limit) {
                 this.axios.get('/api/patient/listPatients', {
                     params: {
-                        index: 1,
-                        limit: 10
+                        index: index,
+                        limit: limit
                     }
                 }).then((request) => {
                     const data = request.data
                     if (data.success){
+                        this.total = data.total
                         const list = data.listPatients
                         list.forEach(i => {
                             i.gender === 1 ? i.gender = '男' : i.gender = '女'
@@ -132,13 +164,42 @@
             submitForm(form) {
                 this.$refs[form].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
-                        this.dialogFormVisible = false
+                        this.axios
+                            .post("/api/patient/addPatient", {
+                                patientId: this.form.patientId,
+                                patientName: this.form.patientName,
+                                gender: this.form.gender,
+                                departmentId: this.userinfo.depId,
+                                phone: this.form.phone,
+                                idNumber: this.form.idNumber
+                            })
+                            .then((response) => {
+                                this.$notify({
+                                    title: '添加成功',
+                                    message: '患者数据添加成功',
+                                    type: 'success'
+                                });
+                                this.$refs['form'].resetFields();
+                                this.dialogFormVisible = false;
+                                this.initTable(1, 10)
+                            })
+                            .catch(() => {
+                                this.$emit("addFail");
+                            });
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
+            },
+            handleSizeChange(val) {
+                this.initTable(1, val)
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.initTable(val, this.limit)
+                console.log(`当前页: ${val}`);
             }
         }
     }
