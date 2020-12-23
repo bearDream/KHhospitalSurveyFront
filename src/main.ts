@@ -10,7 +10,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 // 上线后需要修改为 实际的 外网IP
-Vue.prototype.servername = 'http://localhost'
+Vue.prototype.servername = 'http://47.92.150.78'
 // 'http://kforquestionnaire.xyz'
 Vue.use(ElementUI)
 
