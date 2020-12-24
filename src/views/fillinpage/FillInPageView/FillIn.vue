@@ -171,6 +171,7 @@
                 searchByName: "",
                 patientList: [],
                 selectPatId: 0,
+                departmentId: 0,
             }
         },
         computed: {
@@ -199,6 +200,7 @@
                     }
                 }).then((res) => {
                     const tempList = res.data['questionList'];
+                    //console.log("tempList:" + JSON.stringify(tempList))
                     const resList = [];
                     const ansList = [];
                     for (const t of tempList) {
@@ -319,12 +321,12 @@
                 const textRe = new RegExp(textReg)
                 if (!textRe.test(this.searchByName)) {
                     params = {
-                        departmentId: 1,
+                        departmentId: this.departmentId,
                         idNumber: this.searchByName
                     }
                 }else{
                     params = {
-                        departmentId: 1,
+                        departmentId: this.departmentId,
                         patientName: this.searchByName
                     }
                 }
@@ -361,7 +363,6 @@
             }).catch(() => {
                 this.$message({message: "error！IP地址检测失败！", duration: 1000})
             });
-            this.getPatients();
         }
     }
 </script>
