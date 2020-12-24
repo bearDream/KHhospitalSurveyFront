@@ -130,6 +130,7 @@ export default {
         questionnaireDescription: "请输入描述",
         questionnaireTitle: "请输入标题",
         questionnaireId: this.$route.params.id,
+        depId: 0,
       },
       deleteVisible: false,
       deleted: false,
@@ -166,6 +167,7 @@ export default {
           questionnaireDescription: res.data['questionnaire']['description'],
           questionnaireTitle: res.data['questionnaire']['title'],
           questionnaireId: res.data['questionnaire']['questionnaireId'],
+          depId: JSON.parse(localStorage.getItem('userInfo')).depId,
         };
         this.questionnaire = temp;
       }).catch(() => {
@@ -235,7 +237,7 @@ export default {
         textDescription: '',
       };
       this.questionList.push(newQuestion);
-      console.log('add', this.questionList)
+      console.log('add', this.questionList);
     },
     saveQuestionnaireTitle() {
       this.questionnaire.isBoxSelected = false;
@@ -264,6 +266,7 @@ export default {
         questionList: this.questionList,
       }).then(() => {
         this.$message({message: "问卷已保存", duration: 1000});
+        console.log('', this.questionnaire)
       }).catch(() => {
         this.$message({message: "error！问卷未保存！", duration: 1000});
       });
