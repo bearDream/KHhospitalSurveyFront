@@ -55,8 +55,12 @@
                 </el-form-item>
                 <el-form-item label="科室" :label-width="formLabelWidth">
                     <el-select v-model="form.depId" placeholder="请选择科室">
-                        <el-option label="科室一" value="4"></el-option>
-                        <el-option label="科室二" value="6"></el-option>
+                        <el-option
+                            v-for="item in departmentList"
+                            :label="item.depName"
+                            :key="item.id"
+                            :value="item.id"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -73,7 +77,7 @@
 <script>
 export default {
     name: "EditUserDialog",
-    props: ["isNew"], // isNew: 为true则表示新增，否则为编辑; nodeData: 若新增，则为父结点data, 若编辑，则为当前结点data
+    props: ["isNew", "userData"], // isNew: 为true则表示新增，否则为编辑; nodeData: 若新增，则为父结点data, 若编辑，则为当前结点data
     emits: ["cancelEdit", "addSuccess", "addFail", "editSuccess", "editFail"],
     data() {
         // validStr不包含空格
@@ -127,27 +131,55 @@ export default {
                     { validator: validateCheckPassword, trigger: "blur" },
                 ],
             },
+            departmentList: [
+                { depId: "4", depName: "科室五" },
+                { depId: "6", depName: "科室六" },
+            ],
+            originalPassword: "",
             formLabelWidth: "120px",
         };
     },
     mounted() {
+        this.fetchData();
         if (!this.isNew) {
-            // this.form.username = this.nodeData.depName;
+            this.form.username = this.userData.username;
+            this.originalPassword = this.userData.password;
+            this.form.password = this.userData.password;
+            this.form.checkPassword = this.userData.password;
+            this.form.phoneNum = this.userData.phoneNum;
+            this.form.email = this.userData.email;
+            this.form.depId = this.userData.depId;
+            // console.log("fetch:", this.userData.depId)
         }
     },
     methods: {
+        fetchData() {
+            this.axios
+                .get("/api/department/getDepartmentLists")
+                .then((response) => {
+                    // console.log('response:', response.data.patientLists)
+                    // this.tableData = response.data.patientLists;
+                    this.departmentList = response.data.depList;
+                })
+                .catch((error) => {
+                    // console.log(error);
+                    this.$message({
+                        message: "error!用户信息读取失败！",
+                        duration: 1000,
+                    });
+                });
+        },
         cancelEdit() {
             this.$emit("cancelEdit");
         },
         append() {
             this.axios
                 .post("/api/register" + "?depId=" + this.form.depId, {
-                    user: {
-                        username: this.form.username,
-                        password: this.form.password,
-                        phoneNum: this.form.phoneNum,
-                        email: this.form.email,
-                    },
+                    username: this.form.username,
+                    password: this.form.password,
+                    phoneNum: this.form.phoneNum,
+                    email: this.form.email,
+                    // depId: this.form.depId,
                 })
                 .then((response) => {
                     this.$emit("addSuccess");
@@ -158,14 +190,21 @@ export default {
         },
         edit() {
             const updatedData = {
-                id: this.nodeData.id,
-                depName: this.form.username,
-                parentId: this.nodeData.parentId,
+                userId: this.userData.userId,
+                username: this.form.username,
+                phoneNum: this.form.phoneNum,
+                email: this.form.email,
+                depId: this.form.depId,
             };
+            console.log(updatedData);
+            if (this.form.password !== this.originalPassword) {
+                console.log("edit password");
+                updatedData.password = this.form.password;
+            }
             this.axios
-                .post("/api/department/updateDepartment", updatedData)
+                .post("/api/updateUser", updatedData)
                 .then(() => {
-                    this.$emit("editSuccess", this.nodeData, updatedData);
+                    this.$emit("editSuccess");
                 })
                 .catch(() => {
                     this.$emit("editFail");
