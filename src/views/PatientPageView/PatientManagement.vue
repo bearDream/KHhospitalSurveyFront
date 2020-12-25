@@ -1,78 +1,140 @@
 <template>
-    <div>
-        <div style="text-align: left;">
-            <el-button type="primary" @click="dialogFormVisible = true">添加患者</el-button>
-        </div>
-        <div style="width: 100%; height: 30px;"></div>
-        <el-table
-                :data="tableData"
-                border
-                style="width: 100%">
-            <el-table-column
-                    prop="patientId"
-                    label="患者号"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="patientName"
-                    label="姓名"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="gender"
-                    label="性别">
-            </el-table-column>
-            <el-table-column
-                    prop="phone"
-                    label="手机号">
-            </el-table-column>
-            <el-table-column
-                    prop="idNumber"
-                    label="身份证">
-            </el-table-column>
-        </el-table>
-
-        <!-- 添加患者对话框 -->
-        <el-dialog title="添加患者" :visible.sync="dialogFormVisible">
-            <el-form :model="form" status-icon :rules="rules" ref="form">
-                <el-form-item label="患者号" prop="patientId" :label-width="formLabelWidth">
-                    <el-input v-model="form.patientId" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" prop="patientName" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" required=true auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="性别" prop="gender" :label-width="formLabelWidth">
-                    <el-radio-group v-model="form.gender" style="margin-top: 10px;">
-                        <el-radio :label="1">男</el-radio>
-                        <el-radio :label="0">女</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="科室" prop="department" :label-width="formLabelWidth">
-                    <el-input v-model="form.department" :disabled="true"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
-                    <el-input v-model="form.phone" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="身份证" prop="idNumber" :label-width="formLabelWidth">
-                    <el-input v-model="form.idNumber" auto-complete="off"></el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitForm('form')">确 定</el-button>
-            </div>
-        </el-dialog>
+  <div>
+    <div style="text-align: left;">
+      <el-button type="primary" @click="dialogFormVisible = true">添加患者</el-button>
     </div>
+    <div style="width: 100%; height: 30px;"></div>
+    <el-table
+        :data="tableData"
+        border
+        style="width: 100%">
+      <el-table-column
+          prop="patientId"
+          label="患者号"
+          width="180">
+      </el-table-column>
+      <el-table-column
+          prop="patientName"
+          label="姓名"
+          width="180">
+      </el-table-column>
+      <el-table-column
+          prop="gender"
+          label="性别">
+      </el-table-column>
+      <el-table-column
+          prop="phone"
+          label="手机号">
+      </el-table-column>
+      <el-table-column
+          prop="idNumber"
+          label="身份证">
+      </el-table-column>
+      <el-table-column
+          fixed="right"
+          label="操作"
+          width="100">
+        <template slot-scope="scope">
+          <el-button @click="viewQuestionnaireReport(scope.row)" type="text" size="small">查看问卷报告</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 添加患者对话框 -->
+    <el-dialog title="添加患者" :visible.sync="dialogFormVisible">
+      <el-form :model="form" status-icon :rules="rules" ref="form">
+        <el-form-item label="患者号" prop="patientId" :label-width="formLabelWidth">
+          <el-input v-model="form.patientId" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" prop="patientName" :label-width="formLabelWidth">
+          <el-input v-model="form.name" required=true auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="gender" :label-width="formLabelWidth">
+          <el-radio-group v-model="form.gender" style="margin-top: 10px;">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="0">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="科室" prop="department" :label-width="formLabelWidth">
+          <el-input v-model="form.department" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
+          <el-input v-model="form.phone" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证" prop="idNumber" :label-width="formLabelWidth">
+          <el-input v-model="form.idNumber" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+<!--    查看问卷报告对话框-->
+    <el-dialog title="患者已填写问卷"
+               :visible.sync="dialogTableVisible"
+               :close-on-click-modal="false"
+    >
+      <template>
+        <el-table
+            :data="dialogTableData.filter(data => !search ||
+            data.title.toLowerCase().includes(search.toLowerCase()))"
+            style="width: 100%">
+          <el-table-column
+              label="问卷标题"
+              prop="title">
+          </el-table-column>
+          <el-table-column
+              label="得分"
+              prop="score">
+          </el-table-column>
+          <el-table-column
+              align="right">
+            <template slot="header">
+              <el-input
+                  v-model="search"
+                  size="mini"
+                  placeholder="输入关键字搜索"/>
+            </template>
+<!--            <template slot-scope="scope">-->
+<!--              <el-button-->
+<!--                  size="mini"-->
+<!--                  @click="handleEdit(scope.$index, scope.row)">Edit</el-button>-->
+<!--              <el-button-->
+<!--                  size="mini"-->
+<!--                  type="danger"-->
+<!--                  @click="handleDelete(scope.$index, scope.row)">Delete</el-button>-->
+<!--            </template>-->
+          </el-table-column>
+        </el-table>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "PatientManagement",
+export default {
+  name: "PatientManagement",
 
         data() {
+            const checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback();
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    console.log(reg.test(value));
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        return callback(new Error('请输入正确的手机号'));
+                    }
+                }
+            };
             return {
                 formLabelWidth: '120px',
                 dialogFormVisible: false,
+                dialogTableVisible: false,
                 tableData: [{
                     patientId: '202013233265',
                     name: '王小虎',
@@ -97,7 +159,12 @@
                         { required: true, message: '请输入患者姓名', trigger: 'blur' },
                         { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
                     ]
-                }
+                },
+                dialogTableData: [{
+                    title: '',
+                    score: ''
+                }],
+                search: ''
             }
         },
         created: function () {
@@ -139,6 +206,31 @@
                         return false;
                     }
                 });
+            },
+            viewQuestionnaireReport(row){
+                this.dialogTableVisible = true
+                this.titleAndScore(row.patientId)
+            },
+            titleAndScore(patientId){
+                this.axios.get('/api/fillin/getTitleAndScore', {
+                    params:{
+                        patientId: patientId
+                    }
+                })
+                    .then((request) => {
+                        const data = request.data
+                        const list = []
+                        for (const i in data){
+                            list.push({
+                                title: i,
+                                score: data[i]
+                            })
+                        }
+                        this.dialogTableData = list
+                    })
+                    .catch(() => {
+                        this.$message({message: "错误！问卷报告读取失败", duration: 1000});
+                    })
             }
         }
     }

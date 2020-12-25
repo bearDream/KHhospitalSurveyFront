@@ -9,6 +9,25 @@
                 </div>
             </el-card>
             <el-form :disabled="cannotSubmit">
+                <el-card class="box-card" shadow="hover"
+                >
+                    <el-form-item>
+                        <el-input placeholder="请输入搜索内容（姓名或身份证号）"
+                                  v-model="searchByName"
+                                  style="width: 35%"
+                                  suffix-icon="el-icon-search"
+                        ></el-input>
+                        <el-button type="primary" @click="searchPatient()">搜索</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <div v-if = "patientList.length > 0">
+                            <div style="display: inline"><h3>请选择病人姓名</h3></div>
+                            <el-radio-group style="display: inline-block; margin-right: 30px" v-for="(patList,patIndex) in patientList" :key="patIndex" v-model="selectPatId">
+                                <el-radio :label="patList.patientId" @change="checkPat(patList.patientId)">{{patList.patientName}}({{patList.idNumber}})</el-radio>
+                            </el-radio-group>
+                        </div>
+                    </el-form-item>
+                </el-card>
                 <div v-for="(item,index) in questionList"
                      :key="index">
                     <el-card class="box-card" shadow="hover"
@@ -25,7 +44,6 @@
                             <div class="description-div">{{item.questionDescription}}</div>
 
                         </el-form-item>
-
                         <el-form-item>
                             <el-radio-group v-if="item.questionType==='single_check'"
                                             v-model="answerList[index].answerSingleCheck">
@@ -150,6 +168,10 @@
                 ip: null,
                 alreadySubmit: null,
                 cannotSubmit: null,
+                searchByName: "",
+                patientList: [],
+                selectPatId: 0,
+                departmentId: 0,
             }
         },
         computed: {
@@ -162,7 +184,8 @@
         methods: {
             fetchData() {
                 if(localStorage.getItem('Ip')){
-                    this.axios.get("http://api.tianapi.com/txapi/ipquery/index?key=68b512d1b0023c2a4db0818a4854700c").then((res) => {
+                    this.axios.get("http://api.tianapi.com/txapi/ipquery/index?key=68b512d1b0023c2a4db0818a4854700c")
+                        .then((res) => {
                         const Ip = res.data['newslist'][0]['ip']
                         console.log(res,Ip)
                         localStorage.setItem('Ip', Ip)
@@ -176,7 +199,9 @@
                         questionnaireId: this.$route.params.id,
                     }
                 }).then((res) => {
+                    console.log('data', res.data)
                     const tempList = res.data['questionList'];
+                    //console.log("tempList:" + JSON.stringify(tempList))
                     const resList = [];
                     const ansList = [];
                     for (const t of tempList) {
@@ -198,6 +223,7 @@
                     }
                     this.questionList = resList;
                     this.answerList = ansList;
+                    this.departmentId = res.data.departmentId;
                     this.$message({message: "问卷已读取", duration: 1000});
                 }).catch(() => {
                     this.$message({message: "error！问卷读取失败！", duration: 1000});
@@ -228,7 +254,8 @@
                 if (this.checkValidate()) {
                     this.axios.post("/api/fillin/submitAnswer?questionnaireId=" + this.$route.params.id, {
                         answerList: this.answerList,
-                        ip: this.ip
+                        ip: this.ip,
+                        patientId: this.selectPatId
                     }).then(() => {
                         this.submitVisible = false;
                         this.alreadySubmit = true;
@@ -288,7 +315,35 @@
                     }
                 }
                 return true;
-            }
+            },
+            //查询科室下的病人
+            searchPatient(){
+                let params = {};
+                const textReg = /[\u4e00-\u9fa5]/;
+                const textRe = new RegExp(textReg)
+                if (!textRe.test(this.searchByName)) {
+                    params = {
+                        departmentId: this.departmentId,
+                        idNumber: this.searchByName
+                    }
+                }else{
+                    params = {
+                        departmentId: this.departmentId,
+                        patientName: this.searchByName
+                    }
+                }
+                this.axios.post("/api/patient/getPatientList", params).then((res) => {
+                    //console.log("输出病人列表：" + JSON.stringify(res));
+                    if(res.data.success){
+                        this.patientList = res.data.patients;
+                    }
+                }).catch(() => {
+                    this.$message({message: "error！该科室下病人查询失败！", duration: 1000})
+                });
+            },
+            checkPat(patId){
+                this.selectPatId = patId;
+            },
         },
         mounted() {
 
