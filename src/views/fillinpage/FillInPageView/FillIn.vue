@@ -199,6 +199,7 @@
                         questionnaireId: this.$route.params.id,
                     }
                 }).then((res) => {
+                    console.log('data', res.data)
                     const tempList = res.data['questionList'];
                     //console.log("tempList:" + JSON.stringify(tempList))
                     const resList = [];
@@ -222,6 +223,7 @@
                     }
                     this.questionList = resList;
                     this.answerList = ansList;
+                    this.departmentId = res.data.departmentId;
                     this.$message({message: "问卷已读取", duration: 1000});
                 }).catch(() => {
                     this.$message({message: "error！问卷读取失败！", duration: 1000});

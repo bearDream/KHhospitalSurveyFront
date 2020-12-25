@@ -222,8 +222,8 @@ export default {
                         const list = []
                         for (const i in data){
                             list.push({
-                                key: i,
-                                value: data[i]
+                                title: i,
+                                score: data[i]
                             })
                         }
                         this.dialogTableData = list
