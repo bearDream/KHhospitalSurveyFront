@@ -21,7 +21,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="cancelEdit">取 消</el-button>
-                <el-button type="primary" @click="processSubmit">
+                <el-button type="primary" @click="submit">
                     确 定
                 </el-button>
             </div>
@@ -99,7 +99,7 @@ export default {
                     this.$emit("editFail");
                 });
         },
-        processSubmit() {
+        submit() {
             if (this.isNew) {
                 this.append();
             } else {

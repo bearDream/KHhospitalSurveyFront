@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import OperationList from "./OperationList";
+import DepartmentOperationList from "./DepartmentOperationList";
 
 export default {
     name: "DepartmentSetting",
@@ -56,7 +56,7 @@ export default {
                         <span>{node.label}</span>
                     </span>
                     <span>
-                        <OperationList data={data} node={node}></OperationList>
+                        <DepartmentOperationList data={data} node={node}></DepartmentOperationList>
                     </span>
                 </span>
             );

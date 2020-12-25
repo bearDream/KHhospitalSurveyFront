@@ -23,8 +23,8 @@
                     }}</b></el-avatar
                 >
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-menu" @click.native="goToManage">
-                        管理
+                    <el-dropdown-item icon="el-icon-menu" @click.native="goToUserManage">
+                        用户管理
                     </el-dropdown-item>
                     <el-dropdown-item
                         icon="el-icon-close"
@@ -52,10 +52,10 @@ export default {
                 );
             });
         },
-        goToManage() {
-            const success = this.$router.push("/manage/");
+        goToUserManage() {
+            const success = this.$router.push("/user/");
             if (!success) {
-                console.log("manage error");
+                console.log("user manage error");
             }
         },
         // copyShare() {

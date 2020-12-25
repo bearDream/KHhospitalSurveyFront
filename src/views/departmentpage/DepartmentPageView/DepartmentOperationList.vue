@@ -95,7 +95,7 @@ const DepartmentEnum = {
 export default {
     props: ["data", "node"],
     components: { EditDepartmentDialog },
-    name: "OperationList",
+    name: "DepartmentOperationList",
     data() {
         return {
             editDialogVisible: false,

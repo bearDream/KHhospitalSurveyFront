@@ -59,8 +59,8 @@ const routes: Array<RouteConfig> = [
         component: FillIn,
     },
     {
-        path: '/manage/',
-        name: "manage",
+        path: '/user/',
+        name: "user",
         component: UserManage,
     }
 ]
