@@ -194,7 +194,6 @@ export default {
                 username: this.form.username,
                 phoneNum: this.form.phoneNum,
                 email: this.form.email,
-                depId: this.form.depId,
             };
             console.log(updatedData);
             if (this.form.password !== this.originalPassword) {
@@ -202,7 +201,7 @@ export default {
                 updatedData.password = this.form.password;
             }
             this.axios
-                .post("/api/updateUser", updatedData)
+                .post("/api/updateUser?depId=" + this.form.depId, updatedData)
                 .then(() => {
                     this.$emit("editSuccess");
                 })
