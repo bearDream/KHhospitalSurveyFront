@@ -135,13 +135,7 @@ export default {
                 formLabelWidth: '120px',
                 dialogFormVisible: false,
                 dialogTableVisible: false,
-                tableData: [{
-                    patientId: '202013233265',
-                    name: '王小虎',
-                    department: '骨科',
-                    phone: '18812341234',
-                    idNumber: '530112200001018719'
-                }],
+                tableData: [],
                 form: {
                     patientId: '',
                     name: '',

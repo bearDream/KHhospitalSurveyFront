@@ -19,9 +19,9 @@
                 <el-input size="normal" type="password" v-model="loginForm.password" auto-complete="off"
                           placeholder="请输入密码"></el-input>
             </el-form-item>
-            <el-link type="primary" @click="registerChoose = true" class="link">
-                注册账户
-            </el-link>
+<!--            <el-link type="primary" @click="registerChoose = true" class="link">-->
+<!--                注册账户-->
+<!--            </el-link>-->
 
             <el-button size="normal" type="primary" style="width: 100%;" @click="submitLogin">登录</el-button>
         </el-form>
