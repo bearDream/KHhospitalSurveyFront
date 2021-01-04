@@ -47,7 +47,10 @@
           <el-input v-model="form.patientId" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="patientName" :label-width="formLabelWidth">
-          <el-input v-model="form.name" required=true auto-complete="off"></el-input>
+          <el-input v-model="form.patientName" required=true auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证" prop="idNumber" :label-width="formLabelWidth">
+          <el-input v-model="form.idNumber" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="gender" :label-width="formLabelWidth">
           <el-radio-group v-model="form.gender" style="margin-top: 10px;">
@@ -61,9 +64,7 @@
         <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
           <el-input v-model="form.phone" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="身份证" prop="idNumber" :label-width="formLabelWidth">
-          <el-input v-model="form.idNumber" auto-complete="off"></el-input>
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -152,6 +153,10 @@ export default {
                     patientName: [
                         { required: true, message: '请输入患者姓名', trigger: 'blur' },
                         { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
+                    ],
+                    idNumber: [
+                      { required: true, message: '请输入身份证', trigger: 'blur' },
+                      { min: 18, max: 20, message: '长度在 18 个字符', trigger: 'blur' }
                     ]
                 },
                 dialogTableData: [{
