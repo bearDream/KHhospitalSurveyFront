@@ -39,6 +39,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[10, 50, 100, 200]"
+              :page-size="limit"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total">
+      </el-pagination>
+    </div>
 
     <!-- 添加患者对话框 -->
     <el-dialog title="添加患者" :visible.sync="dialogFormVisible">
@@ -116,8 +127,7 @@
 
 <script>
 export default {
-  name: "PatientManagement",
-
+        name: "PatientManagement",
         data() {
             const checkPhone = (rule, value, callback) => {
                 if (!value) {
@@ -133,14 +143,18 @@ export default {
                 }
             };
             return {
+                limit: 10,
+                currentPage: 1,
+                total: 0,
                 formLabelWidth: '120px',
+                userinfo: {},
                 dialogFormVisible: false,
                 dialogTableVisible: false,
                 tableData: [],
                 form: {
                     patientId: '',
-                    name: '',
-                    gender: '',
+                    patientName: '',
+                    gender: 1,
                     department: '',
                     phone: '',
                     idNumber: ''
@@ -157,6 +171,9 @@ export default {
                     idNumber: [
                       { required: true, message: '请输入身份证', trigger: 'blur' },
                       { min: 18, max: 20, message: '长度在 18 个字符', trigger: 'blur' }
+                    ],
+                    phone: [
+                      {validator: checkPhone, trigger: 'blur'}
                     ]
                 },
                 dialogTableData: [{
@@ -171,60 +188,70 @@ export default {
         },
         methods: {
             init() {
-                const userinfo = JSON.parse(localStorage.getItem('userInfo'))
-                this.form.department = userinfo.depName
-                this.initTable();
+                this.userinfo = JSON.parse(localStorage.getItem('userInfo'))
+                this.form.department = this.userinfo.depName
+                this.initTable(1, 10);
             },
-            initTable() {
-                this.axios.get('/api/patient/listPatients', {
-                    params: {
-                        index: 1,
-                        limit: 10
-                    }
-                }).then((request) => {
-                    const data = request.data
-                    if (data.success){
-                        const list = data.listPatients
-                        list.forEach(i => {
-                            i.gender === 1 ? i.gender = '男' : i.gender = '女'
-                        })
-                        this.tableData = data.listPatients
-                    }
-                    console.log(request.data)
-                }).catch(() => {
-                    this.$message({message: "错误！患者数据读取失败", duration: 1000});
-                })
+            initTable(index, limit) {
+              this.axios.get('/api/patient/listPatients', {
+                params: {
+                  index: index,
+                  limit: limit
+                }
+              }).then((request) => {
+                const data = request.data
+                if (data.success){
+                  this.total = data.total
+                  const list = data.listPatients
+                  list.forEach(i => {
+                    i.gender === 1 ? i.gender = '男' : i.gender = '女'
+                  })
+                  this.tableData = data.listPatients
+                }
+                console.log(request.data)
+              }).catch(() => {
+                this.$message({message: "错误！患者数据读取失败", duration: 1000});
+              })
             },
             submitForm(form) {
               this.$refs[form].validate((valid) => {
                 if (valid) {
                   this.axios
-                          .post("/api/patient/addPatient", {
-                            patientId: this.form.patientId,
-                            patientName: this.form.patientName,
-                            gender: this.form.gender,
-                            departmentId: this.userinfo.depId,
-                            phone: this.form.phone,
-                            idNumber: this.form.idNumber
-                          })
-                          .then((response) => {
-                            this.$notify({
-                              title: '添加成功',
-                              message: '患者数据添加成功',
-                              type: 'success'
-                            });
-                            this.$refs['form'].resetFields();
-                            this.dialogFormVisible = false;
-                            this.initTable(1, 10)
-                          })
-                          .catch(() => {
-                            this.$emit("addFail");
-                          });
+                      .post("/api/patient/addPatient", {
+                        patientId: this.form.patientId,
+                        patientName: this.form.patientName,
+                        gender: this.form.gender,
+                        departmentId: this.userinfo.depId,
+                        phone: this.form.phone,
+                        idNumber: this.form.idNumber
+                      })
+                      .then((response) => {
+                        this.$notify({
+                          title: '添加成功',
+                          message: '患者数据添加成功',
+                          type: 'success'
+                        });
+                        this.$refs['form'].resetFields();
+                        this.dialogFormVisible = false;
+                        this.initTable(1, 10)
+                      })
+                      .catch(() => {
+                        this.$emit("addFail");
+                      });
                 } else {
                   console.log('error submit!!');
                   return false;
                 }
               });
+            },
+            handleSizeChange(val) {
+              this.initTable(1, val)
+              console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+              this.currentPage = val;
+              this.initTable(val, this.limit)
+              console.log(`当前页: ${val}`);
             },
             viewQuestionnaireReport(row){
                 this.dialogTableVisible = true
