@@ -196,15 +196,35 @@ export default {
                 })
             },
             submitForm(form) {
-                this.$refs[form].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                        this.dialogFormVisible = false
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+              this.$refs[form].validate((valid) => {
+                if (valid) {
+                  this.axios
+                          .post("/api/patient/addPatient", {
+                            patientId: this.form.patientId,
+                            patientName: this.form.patientName,
+                            gender: this.form.gender,
+                            departmentId: this.userinfo.depId,
+                            phone: this.form.phone,
+                            idNumber: this.form.idNumber
+                          })
+                          .then((response) => {
+                            this.$notify({
+                              title: '添加成功',
+                              message: '患者数据添加成功',
+                              type: 'success'
+                            });
+                            this.$refs['form'].resetFields();
+                            this.dialogFormVisible = false;
+                            this.initTable(1, 10)
+                          })
+                          .catch(() => {
+                            this.$emit("addFail");
+                          });
+                } else {
+                  console.log('error submit!!');
+                  return false;
+                }
+              });
             },
             viewQuestionnaireReport(row){
                 this.dialogTableVisible = true
